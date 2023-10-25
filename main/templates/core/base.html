@@ -1,0 +1,68 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CHI | Neurobehavioral REDCap Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static '/main/img/cchmc.ico' %}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sandstone/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'main/css/bootstrap_overrides.css' %}">
+
+    <!-- JavaScript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/804178a312.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<script>
+
+	$(document).ready(function(){
+	  $('[data-toggle="popover"]').popover();
+	});
+
+</script>
+
+
+{% if not embedded %}
+	{% include 'core/navbar.html' %}
+{% endif %}
+
+
+
+
+<div id="content" class="container-fluid" style="{% if not embedded %}min-height:81vh;{% endif %}max-width: 1800px;">
+	{% include 'core/messages.html' %}
+	{% block content %}{% endblock %}
+</div>
+
+
+
+
+{% if not embedded %}
+	<footer class="container-fluid" style="border-top:solid 1px #b3b3b3; margin:10px auto 0 auto;padding:2px;">
+	    <div style="float:right">
+	    	<a href="http://neurobehavioral.research.cchmc.org"><img src="{% static 'main/img/CCHMC_Logo.png' %}" alt="CCHMC logo" width="160" height="60"></a>
+	    </div>
+	    <div style="color:#3e3f3a">
+	    	<div style="font-size:23px; padding-top:9px;">
+	    		<a href="https://www.cincinnatichildrens.org/research/divisions/p/psychiatry/labs/erickson-wink" style="color:#3e3f3a" class="no-underline">Erickson Lab</a> 
+	    	</div>
+	    	<a href="https://www.cincinnatichildrens.org/research/divisions/p/psychiatry/labs/erickson-wink" style="color:#3e3f3a" class="no-underline">
+	    		Neurobehavioral Treatment Discovery Team 
+	    	</a>
+	    	| 
+	    	<a href="https://www.cincinnatichildrens.org/research/divisions/p/psychiatry/labs/erickson-wink" style="color:#3e3f3a" class="no-underline">
+	    		Department of Psychiatry
+	    	</a>
+	    </div>
+	</footer>
+{% endif %}
+
+</body>
+</html>
