@@ -132,10 +132,16 @@ def _determine_instruments_for_one_visit(entry):
             visit_studies.append(oStudy)
             for oRule in oStudy.instrumentcreationrule_set.all():
                 if output["visit_age"]:
-                    if oRule.min_age and float(output["visit_age"]) <= oRule.min_age:
-                        continue
-                    if oRule.max_age and float(output["visit_age"]) >= oRule.max_age:
-                        continue
+                    if not oRule.strict_operator:
+                        if oRule.min_age and float(output["visit_age"]) < oRule.min_age:
+                            continue
+                        if oRule.max_age and float(output["visit_age"]) > oRule.max_age:
+                            continue
+                    elif oRule.strict_operator:
+                        if oRule.min_age and float(output["visit_age"]) <= oRule.min_age:
+                            continue
+                        if oRule.max_age and float(output["visit_age"]) >= oRule.max_age:
+                            continue
                 if output["visit_group"] and oRule.group:
                     if int(output["visit_group"]) != oRule.group.group_number:
                         continue
