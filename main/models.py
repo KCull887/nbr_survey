@@ -1,4 +1,3 @@
-from email.policy import strict
 from django.db import models
 
 
