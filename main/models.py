@@ -128,3 +128,19 @@ class CreatedInstrument(models.Model):
             return response
         return "(FAILED) " + response
 
+class InstrumentCreationEventLog(models.Model):
+    """ Tracks calls to function create_instruments_for_all_incomplete().
+
+    The main purpose of tracking this is to prevent the method from being called twice at the
+    same time. Doing so could result in duplicate instruments being created.
+    """
+    class StatusOptions(models.TextChoices):
+        STARTED = "started", "started"
+        FINISHED = "finished", "finished"
+        NEVER_FINISHED = "never_finished", "never_finished"
+
+    status = models.CharField(max_length=20, choices=StatusOptions.choices, default=StatusOptions.STARTED,)
+    start = models.DateTimeField()
+    finish = models.DateTimeField(blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
+
