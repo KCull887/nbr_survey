@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import ProtectedError
 from django.conf import settings
+from django.core.paginator import Paginator
 
 from redcap_importer.models import RedcapConnection
 from .instrument_management import (
@@ -63,7 +64,9 @@ def test_rules(request):
         oVisit = models.CompletedVisit.objects.filter(record_id=entry["record_id"], instance=int(entry["redcap_repeat_instance"])).first()
         entry["completed_visit"] = oVisit
         visits.append(entry)
-    context["visits"] = visits
+    paginated_visits = Paginator(visits, 50)
+    page_number = request.GET.get('page', 1)
+    context["visits"] = paginated_visits.get_page(page_number)
     context["current_page"] = "test_rules"
     context["VISIT_INFO_CUTOFF_DATE"] = settings.VISIT_INFO_CUTOFF_DATE
     return render(request, 'main/test_rules.html', context)
