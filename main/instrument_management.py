@@ -14,19 +14,28 @@ def create_instruments_for_one_visit(record_id, redcap_repeat_instance):
     return response
 
 def create_instruments_for_all_incomplete():
+    response = []
     # use logs to make sure this isn't currently running already
     models.InstrumentCreationEventLog.flag_never_finished()
     oLogLatest = models.InstrumentCreationEventLog.objects.order_by("-start").first()
     if oLogLatest and oLogLatest.status == models.InstrumentCreationEventLog.StatusOptions.STARTED:
         response = ["The create instruments command is currently already running. No action was taken."]
         return response
+    # start a new log record
     oLog = models.InstrumentCreationEventLog(start=datetime.datetime.now())
     oLog.save()
-    response = _create_or_ignore_instruments()
-    # update log record to mark complete
+    # load instruments
+    try:
+        response = _create_or_ignore_instruments()
+    except Exception as e:
+        response = ["Instrument creation failed to complete with error: " + str(e)]
+    # update the log record to mark complete
     oLog.status = models.InstrumentCreationEventLog.StatusOptions.FINISHED
     oLog.finish = datetime.datetime.now()
+    if response:
+        oLog.comment = "\n".join(response)
     oLog.save()
+    # return any error or warning messages
     return response
 
 def ignore_instruments_for_one_visit(record_id, redcap_repeat_instance):

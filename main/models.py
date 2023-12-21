@@ -157,8 +157,8 @@ class InstrumentCreationEventLog(models.Model):
         )
         assume_failed_minutes = 60      # assume an event failed after 60 minutes
         for oLog in qLog:
-            time_delta = datetime.datetime.now() - oLog.start()
-            minutes = time_delta.seconds / 60
+            time_delta = datetime.datetime.now() - oLog.start
+            minutes = time_delta.total_seconds() / 60
             if minutes > assume_failed_minutes:
                 oLog.status = InstrumentCreationEventLog.StatusOptions.NEVER_FINISHED
                 oLog.comment = f"marked as never finished at {datetime.datetime.now()}"
