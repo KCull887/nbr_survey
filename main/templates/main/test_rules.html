@@ -39,6 +39,11 @@
 
     <hr>
     <h3>Visit Information Records since {{ VISIT_INFO_CUTOFF_DATE }}</h3>
+
+    {% with pObj=visits %}
+        {% include 'core/pagination.html' %}
+    {% endwith %}
+
     <table class="table table-bordered">
         <thead class="thead-light">
             <tr>
@@ -116,6 +121,10 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% with pObj=visits %}
+        {% include 'core/pagination.html' %}
+    {% endwith %}
 
 
 {% endblock %}
