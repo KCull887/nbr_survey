@@ -33,3 +33,8 @@ class CreatedInstrumentAdmin(admin.ModelAdmin):
    pass
 
 admin.site.register(models.CreatedInstrument, CreatedInstrumentAdmin)
+
+class InstrumentCreationEventLogAdmin(admin.ModelAdmin):
+    list_display = ("status", "start", "finish", "comment")
+
+admin.site.register(models.InstrumentCreationEventLog, InstrumentCreationEventLogAdmin)

@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -127,4 +129,42 @@ class CreatedInstrument(models.Model):
         if self.successful:
             return response
         return "(FAILED) " + response
+
+class InstrumentCreationEventLog(models.Model):
+    """ Tracks calls to function create_instruments_for_all_incomplete().
+
+    The main purpose of tracking this is to prevent the method from being called twice at the
+    same time. Doing so could result in duplicate instruments being created.
+    """
+    class StatusOptions(models.TextChoices):
+        STARTED = "started", "started"
+        FINISHED = "finished", "finished"
+        NEVER_FINISHED = "never_finished", "never_finished"
+
+    status = models.CharField(max_length=20, choices=StatusOptions.choices, default=StatusOptions.STARTED,)
+    start = models.DateTimeField()
+    finish = models.DateTimeField(blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
+
+    @staticmethod
+    def flag_never_finished():
+        """
+        If a started event takes too long, it should be assumed to have failed and flagged as
+        "never_finished".
+        """
+        qLog = InstrumentCreationEventLog.objects.filter(
+            status=InstrumentCreationEventLog.StatusOptions.STARTED
+        )
+        assume_failed_minutes = 60      # assume an event failed after 60 minutes
+        for oLog in qLog:
+            time_delta = datetime.datetime.now() - oLog.start
+            minutes = time_delta.total_seconds() / 60
+            if minutes > assume_failed_minutes:
+                oLog.status = InstrumentCreationEventLog.StatusOptions.NEVER_FINISHED
+                oLog.comment = f"marked as never finished at {datetime.datetime.now()}"
+                oLog.save()
+
+
+
+
 
