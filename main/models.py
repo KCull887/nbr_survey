@@ -54,11 +54,17 @@ class Instrument(models.Model):
 #     max_age = models.FloatField(blank=True, null=True, help_text="Leave blank for no max age")
 
 class InstrumentCreationRule(models.Model):
+    class StrictOperatorOptions(models.TextChoices):
+        MIN = "min", "min"
+        MAX = "max", "max"
+        BOTH = "both", "both"
+    
     study = models.ForeignKey("Study", on_delete=models.CASCADE)
     group = models.ForeignKey("Group", on_delete=models.PROTECT, blank=True, null=True, help_text="Leave blank for all groups")
     min_age = models.FloatField(blank=True, null=True, help_text="Leave blank for no min age")
     max_age = models.FloatField(blank=True, null=True, help_text="Leave blank for no max age")
     strict_operator = models.BooleanField(blank=False, choices=((True, 'Yes'), (False, 'No')), help_text="Select Yes to make the operators strictly less than for max age and strictly greater than for min age.  Select No to include records equal to listed min or max age(s).")
+    strict_operator_choice = models.CharField(max_length = 20, blank=True, null=True, choices=StrictOperatorOptions.choices)
     instruments = models.ManyToManyField("Instrument", blank=True, help_text="Hold ctrl to select multiple")
 
     def __str__(self):
@@ -81,9 +87,11 @@ class InstrumentCreationRule(models.Model):
             group_desc = f" and group is {self.group}"
         if self.strict_operator:
             if self.min_age:
-                min_age_desc = f" and age > {self.min_age}"
+                if self.strict_operator_choice and (self.strict_operator_choice == "min" or self.strict_operator_choice == "both"):
+                    min_age_desc = f" and age > {self.min_age}"
             if self.max_age:
-                max_age_desc = f" and age < {self.max_age}"
+                if self.strict_operator_choice and (self.strict_operator_choice == "max" or self.strict_operator_choice == "both"):
+                    max_age_desc = f" and age < {self.max_age}"
         elif not self.strict_operator:
             if self.min_age:
                 min_age_desc = f" and age >= {self.min_age}"
