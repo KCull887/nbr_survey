@@ -163,6 +163,13 @@ def _determine_instruments_for_one_visit(entry):
                             continue
                         if oRule.max_age and float(output["visit_age"]) >= oRule.max_age and (oRule.strict_operator_choice and (oRule.strict_operator_choice == "max" or oRule.strict_operator_choice == "both")):
                             continue
+                        if oRule.min_age and oRule.max_age:
+                            if (float(output["visit_age"]) > oRule.max_age or float(output["visit_age"]) < oRule.min_age) and (oRule.strict_operator_choice and oRule.strict_operator_choice == "both"):
+                                continue
+                            elif (float(output["visit_age"]) >= oRule.max_age or float(output["visit_age"]) < oRule.min_age) and (oRule.strict_operator_choice and oRule.strict_operator_choice == "max"):
+                                continue
+                            elif (float(output["visit_age"]) > oRule.max_age or float(output["visit_age"]) <= oRule.min_age) and (oRule.strict_operator_choice and oRule.strict_operator_choice == "min"):
+                                continue
                 if output["visit_group"] and oRule.group:
                     if int(output["visit_group"]) != oRule.group.group_number:
                         continue

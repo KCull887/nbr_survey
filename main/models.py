@@ -89,9 +89,13 @@ class InstrumentCreationRule(models.Model):
             if self.min_age:
                 if self.strict_operator_choice and (self.strict_operator_choice == "min" or self.strict_operator_choice == "both"):
                     min_age_desc = f" and age > {self.min_age}"
+                elif self.strict_operator_choice and (self.strict_operator_choice == "max"):
+                    min_age_desc = f" and age >= {self.min_age}"
             if self.max_age:
                 if self.strict_operator_choice and (self.strict_operator_choice == "max" or self.strict_operator_choice == "both"):
                     max_age_desc = f" and age < {self.max_age}"
+                elif self.strict_operator_choice and (self.strict_operator_choice == "min"):
+                    max_age_desc = f" and age <= {self.max_age}"
         elif not self.strict_operator:
             if self.min_age:
                 min_age_desc = f" and age >= {self.min_age}"
