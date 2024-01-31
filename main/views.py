@@ -43,7 +43,7 @@ def test_rules(request):
     }
     response = utils.run_request("record", oConnection, options)
     visits = []
-    for entry in response:
+    for entry in reversed(response):
         if not entry["redcap_repeat_instance"]:
             continue
         visit_studies = []

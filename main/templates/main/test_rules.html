@@ -13,7 +13,7 @@
 
 
 
-
+    {% comment %}
     <form method="post" action="{% url 'create_instruments' %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-lg btn-success">
@@ -34,6 +34,7 @@
             Reset all (delete instruments or stop ignoring)
         </button>
     </form>
+    {% endcomment %}
 
 
 
